@@ -32,7 +32,10 @@ func NewServer(
 }
 
 func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
-	uid := uuid.New()
+	uid, err := uuid.NewRandom()
+	if err != nil {
+		panic(err)
+	}
 	return m.NewWorker(uid.String(), concurrency)
 }
 
