@@ -16,7 +16,7 @@ import (
 )
 
 type Server struct {
-	*machinery.Server
+	machinery.Server
 }
 
 // NewServer creates Server instance
@@ -25,7 +25,7 @@ func NewServer(
 	backendServer backendsiface.Backend, lock lockiface.Lock,
 ) *Server {
 	server := &Server{
-		machinery.NewServer(cnf, brokerServer, backendServer, lock),
+		*machinery.NewServer(cnf, brokerServer, backendServer, lock),
 	}
 
 	return server
