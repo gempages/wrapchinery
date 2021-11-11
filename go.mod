@@ -2,7 +2,10 @@ module github.com/es-hs/wrapchinery
 
 go 1.17
 
-require github.com/RichardKnop/machinery/v2 v2.0.11
+require (
+	github.com/RichardKnop/machinery/v2 v2.0.11
+	github.com/google/uuid v1.2.0
+)
 
 require (
 	cloud.google.com/go v0.75.0 // indirect
@@ -19,7 +22,6 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
-	github.com/google/uuid v1.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.0.5 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
@@ -27,6 +29,7 @@ require (
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/klauspost/compress v1.9.5 // indirect
+	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect

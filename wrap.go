@@ -12,6 +12,7 @@ import (
 	"github.com/RichardKnop/machinery/v2/config"
 	lockiface "github.com/RichardKnop/machinery/v2/locks/iface"
 	"github.com/RichardKnop/machinery/v2/tasks"
+	"github.com/google/uuid"
 )
 
 type Server struct {
@@ -28,6 +29,11 @@ func NewServer(
 	}
 
 	return server
+}
+
+func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
+	uid := uuid.New()
+	return m.NewWorker(uid.String(), concurrency)
 }
 
 func (m *Server) WrapSendTask(taskName string, delay time.Duration, retry int, args ...interface{}) (*result.AsyncResult, error) {
