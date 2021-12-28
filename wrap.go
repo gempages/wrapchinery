@@ -61,6 +61,7 @@ func GetTaskSignature(taskName string, delay time.Duration, retry int, args ...i
 		task.ETA = &timeETA
 	}
 	task.RetryCount = retry
+	task.IgnoreWhenTaskNotRegistered = true
 	if len(args) > 0 {
 		task.Args = parseArgs(args)
 	}
