@@ -1,17 +1,21 @@
 # wrapchinery
+
 Wrapped machinery package (v2) to send tasks more easily
 
 ## Usage
+
 Call `wrapchinery.NewServer()` instead of `machinery.NewServer()`
+
 ```go
 import (
-    github.com/es-hs/wrapchinery
+github.com/es-hs/wrapchinery
 )
 
 server := wrapchinery.NewServer(...)
 ```
 
 Use wrapped functions:
+
 ```go
 // Create new worker
 server.WrapNewWorker(concurrency int) *machinery.Worker
@@ -22,6 +26,7 @@ server.WrapSendTaskWithContext(taskName string, ctx context.Context, delay time.
 ```
 
 Helper function to ease the pain of creating Signature:
+
 ```go
 wrapchinery.GetTaskSignature(taskName string, delay time.Duration, retry int, args ...interface{}) *tasks.Signature
 ```

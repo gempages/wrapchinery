@@ -11,7 +11,9 @@ import (
 	brokersiface "github.com/RichardKnop/machinery/v2/brokers/iface"
 	"github.com/RichardKnop/machinery/v2/config"
 	lockiface "github.com/RichardKnop/machinery/v2/locks/iface"
+	"github.com/RichardKnop/machinery/v2/log"
 	"github.com/RichardKnop/machinery/v2/tasks"
+	"github.com/es-hs/wrapchinery/logger"
 	"github.com/google/uuid"
 )
 
@@ -24,6 +26,14 @@ func NewServer(
 	cnf *config.Config, brokerServer brokersiface.Broker,
 	backendServer backendsiface.Backend, lock lockiface.Lock,
 ) *Server {
+
+	// Setup loggers
+	log.SetDebug(logger.NewDebugLogger())
+	log.SetError(logger.NewErrorLogger())
+	log.SetInfo(logger.NewInfoLogger())
+	log.SetFatal(logger.NewFatalLogger())
+	log.SetWarning(logger.NewWarningLogger())
+
 	server := &Server{
 		*machinery.NewServer(cnf, brokerServer, backendServer, lock),
 	}
