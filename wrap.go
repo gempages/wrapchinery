@@ -27,18 +27,19 @@ func NewServer(
 	backendServer backendsiface.Backend, lock lockiface.Lock,
 ) *Server {
 
-	// Setup loggers
-	log.SetDebug(logger.NewDebugLogger())
-	log.SetError(logger.NewErrorLogger())
-	log.SetInfo(logger.NewInfoLogger())
-	log.SetFatal(logger.NewFatalLogger())
-	log.SetWarning(logger.NewWarningLogger())
-
 	server := &Server{
 		*machinery.NewServer(cnf, brokerServer, backendServer, lock),
 	}
 
 	return server
+}
+
+func SetupLoggers() {
+	log.SetDebug(logger.NewDebugLogger())
+	log.SetError(logger.NewErrorLogger())
+	log.SetInfo(logger.NewInfoLogger())
+	log.SetFatal(logger.NewFatalLogger())
+	log.SetWarning(logger.NewWarningLogger())
 }
 
 func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
