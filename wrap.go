@@ -3,6 +3,7 @@ package wrapchinery
 import (
 	"context"
 	"reflect"
+	"runtime"
 	"time"
 
 	"github.com/RichardKnop/machinery/v2"
@@ -42,14 +43,16 @@ func SetupLoggers() {
 	log.SetWarning(logger.NewWarningLogger())
 }
 
-func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
+// WrapNewWorker creates a new machinery worker with a random UUID as tag and concurrency = number of CPU x2
+func (m *Server) WrapNewWorker() *machinery.Worker {
 	uid, err := uuid.NewRandom()
 	if err != nil {
 		panic(err)
 	}
-	return m.NewWorker(uid.String(), concurrency)
+	return m.NewWorker(uid.String(), runtime.NumCPU()*2)
 }
 
+// WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
 func (m *Server) WrapSendTask(taskName string, delay time.Duration, retry int, args ...interface{}) (*result.AsyncResult, error) {
 	task := GetTaskSignature(taskName, delay, retry, args)
 	return m.SendTask(task)
@@ -62,6 +65,7 @@ func (m *Server) WrapSendTaskWithContext(
 	return m.SendTaskWithContext(ctx, task)
 }
 
+// GetTaskSignature returns machinery's task signature object to use with SendTask and SendTaskWithContext functions
 func GetTaskSignature(taskName string, delay time.Duration, retry int, args ...interface{}) *tasks.Signature {
 	task := tasks.Signature{
 		Name: taskName,
