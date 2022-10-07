@@ -14,7 +14,7 @@ import (
 	lockiface "github.com/RichardKnop/machinery/v2/locks/iface"
 	"github.com/RichardKnop/machinery/v2/log"
 	"github.com/RichardKnop/machinery/v2/tasks"
-	"github.com/es-hs/wrapchinery/logger"
+	"github.com/gempages/wrapchinery/logger"
 	"github.com/google/uuid"
 )
 

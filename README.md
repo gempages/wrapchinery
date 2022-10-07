@@ -8,7 +8,7 @@ Call `wrapchinery.NewServer()` instead of `machinery.NewServer()`
 
 ```go
 import (
-github.com/es-hs/wrapchinery
+github.com/gempages/wrapchinery
 )
 
 server := wrapchinery.NewServer(...)
