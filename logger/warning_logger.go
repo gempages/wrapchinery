@@ -11,38 +11,38 @@ func NewWarningLogger() logging.LoggerInterface {
 	return &warningLogger{}
 }
 
-func (warningLogger) Print(i ...interface{}) {
-	logrus.Warning(i)
+func (warningLogger) Print(args ...interface{}) {
+	logrus.Warning(args...)
 }
 
-func (warningLogger) Printf(s string, i ...interface{}) {
-	logrus.Warningf(s, i)
+func (warningLogger) Printf(format string, args ...interface{}) {
+	logrus.Warningf(format, args...)
 }
 
-func (warningLogger) Println(i ...interface{}) {
-	logrus.Warningln(i)
+func (warningLogger) Println(args ...interface{}) {
+	logrus.Warningln(args...)
 }
 
-func (warningLogger) Fatal(i ...interface{}) {
-	logrus.Fatal(i)
+func (warningLogger) Fatal(args ...interface{}) {
+	logrus.Fatal(args...)
 }
 
-func (warningLogger) Fatalf(s string, i ...interface{}) {
-	logrus.Fatalf(s, i)
+func (warningLogger) Fatalf(format string, args ...interface{}) {
+	logrus.Fatalf(format, args...)
 }
 
-func (warningLogger) Fatalln(i ...interface{}) {
-	logrus.Fatalln(i)
+func (warningLogger) Fatalln(args ...interface{}) {
+	logrus.Fatalln(args...)
 }
 
-func (warningLogger) Panic(i ...interface{}) {
-	logrus.Panic(i)
+func (warningLogger) Panic(args ...interface{}) {
+	logrus.Panic(args...)
 }
 
-func (warningLogger) Panicf(s string, i ...interface{}) {
-	logrus.Panicf(s, i)
+func (warningLogger) Panicf(format string, args ...interface{}) {
+	logrus.Panicf(format, args...)
 }
 
-func (warningLogger) Panicln(i ...interface{}) {
-	logrus.Panicln(i)
+func (warningLogger) Panicln(args ...interface{}) {
+	logrus.Panicln(args...)
 }

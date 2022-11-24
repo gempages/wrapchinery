@@ -11,38 +11,38 @@ func NewFatalLogger() logging.LoggerInterface {
 	return &fatalLogger{}
 }
 
-func (fatalLogger) Print(i ...interface{}) {
-	logrus.Print(i)
+func (fatalLogger) Print(args ...interface{}) {
+	logrus.Print(args...)
 }
 
-func (fatalLogger) Printf(s string, i ...interface{}) {
-	logrus.Printf(s, i)
+func (fatalLogger) Printf(format string, args ...interface{}) {
+	logrus.Printf(format, args...)
 }
 
-func (fatalLogger) Println(i ...interface{}) {
-	logrus.Println(i)
+func (fatalLogger) Println(args ...interface{}) {
+	logrus.Println(args...)
 }
 
-func (fatalLogger) Fatal(i ...interface{}) {
-	logrus.Fatal(i)
+func (fatalLogger) Fatal(args ...interface{}) {
+	logrus.Fatal(args...)
 }
 
-func (fatalLogger) Fatalf(s string, i ...interface{}) {
-	logrus.Fatalf(s, i)
+func (fatalLogger) Fatalf(format string, args ...interface{}) {
+	logrus.Fatalf(format, args...)
 }
 
-func (fatalLogger) Fatalln(i ...interface{}) {
-	logrus.Fatalln(i)
+func (fatalLogger) Fatalln(args ...interface{}) {
+	logrus.Fatalln(args...)
 }
 
-func (fatalLogger) Panic(i ...interface{}) {
-	logrus.Panic(i)
+func (fatalLogger) Panic(args ...interface{}) {
+	logrus.Panic(args...)
 }
 
-func (fatalLogger) Panicf(s string, i ...interface{}) {
-	logrus.Panicf(s, i)
+func (fatalLogger) Panicf(format string, args ...interface{}) {
+	logrus.Panicf(format, args...)
 }
 
-func (fatalLogger) Panicln(i ...interface{}) {
-	logrus.Panicln(i)
+func (fatalLogger) Panicln(args ...interface{}) {
+	logrus.Panicln(args...)
 }
