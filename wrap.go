@@ -59,7 +59,7 @@ func (m *Server) WrapSendTask(taskName string, delay time.Duration, retry int, a
 }
 
 func (m *Server) WrapSendTaskWithContext(
-	taskName string, ctx context.Context, delay time.Duration, retry int, args ...interface{},
+	ctx context.Context, taskName string, delay time.Duration, retry int, args ...interface{},
 ) (*result.AsyncResult, error) {
 	task := GetTaskSignature(taskName, delay, retry, args)
 	return m.SendTaskWithContext(ctx, task)
