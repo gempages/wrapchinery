@@ -54,14 +54,14 @@ func (m *Server) WrapNewWorker() *machinery.Worker {
 
 // WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
 func (m *Server) WrapSendTask(taskName string, delay time.Duration, retry int, args ...interface{}) (*result.AsyncResult, error) {
-	task := GetTaskSignature(taskName, delay, retry, args)
+	task := GetTaskSignature(taskName, delay, retry, args...)
 	return m.SendTask(task)
 }
 
 func (m *Server) WrapSendTaskWithContext(
 	ctx context.Context, taskName string, delay time.Duration, retry int, args ...interface{},
 ) (*result.AsyncResult, error) {
-	task := GetTaskSignature(taskName, delay, retry, args)
+	task := GetTaskSignature(taskName, delay, retry, args...)
 	return m.SendTaskWithContext(ctx, task)
 }
 
@@ -78,7 +78,7 @@ func GetTaskSignature(taskName string, delay time.Duration, retry int, args ...i
 	task.RetryCount = retry
 	task.IgnoreWhenTaskNotRegistered = true
 	if len(args) > 0 {
-		task.Args = parseArgs(args)
+		task.Args = parseArgs(args...)
 	}
 	return &task
 }
