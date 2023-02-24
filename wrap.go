@@ -18,6 +18,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type TaskConfig struct {
+	Name       string
+	Delay      time.Duration
+	RetryCount int
+	OnSuccess  *TaskConfig
+	OnError    *TaskConfig
+}
+
 type Server struct {
 	machinery.Server
 }
@@ -53,38 +61,36 @@ func (m *Server) WrapNewWorker() *machinery.Worker {
 }
 
 // WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
-func (m *Server) WrapSendTask(taskName string, delay time.Duration, retry int, args ...interface{}) (*result.AsyncResult, error) {
-	task := GetTaskSignature(taskName, delay, retry, args...)
+func (m *Server) WrapSendTask(cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
+	task := GetTaskSignature(cfg, args...)
 	return m.SendTask(task)
 }
 
-func (m *Server) WrapSendTaskWithContext(
-	ctx context.Context, taskName string, delay time.Duration, retry int, args ...interface{},
-) (*result.AsyncResult, error) {
-	task := GetTaskSignature(taskName, delay, retry, args...)
+func (m *Server) WrapSendTaskWithContext(ctx context.Context, cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
+	task := GetTaskSignature(cfg, args...)
 	return m.SendTaskWithContext(ctx, task)
 }
 
 // GetTaskSignature returns machinery's task signature object to use with SendTask and SendTaskWithContext functions
-func GetTaskSignature(taskName string, delay time.Duration, retry int, args ...interface{}) *tasks.Signature {
-	task := tasks.Signature{
-		Name: taskName,
-		Args: []tasks.Arg{},
-	}
-	if delay > 0 {
-		timeETA := time.Now().UTC().Add(delay)
+func GetTaskSignature(cfg *TaskConfig, args ...interface{}) *tasks.Signature {
+	task, _ := tasks.NewSignature(cfg.Name, parseArgs(args...))
+	if cfg.Delay > 0 {
+		timeETA := time.Now().UTC().Add(cfg.Delay)
 		task.ETA = &timeETA
 	}
-	task.RetryCount = retry
+	task.RetryCount = cfg.RetryCount
 	task.IgnoreWhenTaskNotRegistered = true
-	if len(args) > 0 {
-		task.Args = parseArgs(args...)
+	if cfg.OnSuccess != nil {
+		task.OnSuccess = []*tasks.Signature{GetTaskSignature(cfg.OnSuccess, args...)}
 	}
-	return &task
+	if cfg.OnError != nil {
+		task.OnError = []*tasks.Signature{GetTaskSignature(cfg.OnError, args...)}
+	}
+	return task
 }
 
 func parseArgs(args ...interface{}) []tasks.Arg {
-	taskArgs := []tasks.Arg{}
+	var taskArgs []tasks.Arg
 	for k := range args {
 		taskArgs = append(taskArgs, tasks.Arg{
 			Type:  reflect.TypeOf(args[k]).String(),
