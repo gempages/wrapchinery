@@ -1,4 +1,4 @@
-package eager
+package locks
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ var (
 	ErrEagerLockFailed = errors.New("eager lock: failed to acquire lock")
 )
 
-type Lock struct {
+type EagerLock struct {
 	retries  int
 	interval time.Duration
 	register struct {
@@ -19,8 +19,8 @@ type Lock struct {
 	}
 }
 
-func New() *Lock {
-	return &Lock{
+func NewEager() *EagerLock {
+	return &EagerLock{
 		retries:  3,
 		interval: 5 * time.Second,
 		register: struct {
@@ -30,7 +30,7 @@ func New() *Lock {
 	}
 }
 
-func (e *Lock) LockWithRetries(key string, value int64) error {
+func (e *EagerLock) LockWithRetries(key string, value int64) error {
 	for i := 0; i <= e.retries; i++ {
 		err := e.Lock(key, value)
 		if err == nil {
@@ -42,7 +42,7 @@ func (e *Lock) LockWithRetries(key string, value int64) error {
 	return ErrEagerLockFailed
 }
 
-func (e *Lock) Lock(key string, value int64) error {
+func (e *EagerLock) Lock(key string, value int64) error {
 	timeout, exist := e.readLock(key)
 	if !exist || time.Now().UnixNano() > timeout {
 		e.register.Lock()
@@ -53,7 +53,7 @@ func (e *Lock) Lock(key string, value int64) error {
 	return ErrEagerLockFailed
 }
 
-func (e *Lock) readLock(key string) (int64, bool) {
+func (e *EagerLock) readLock(key string) (int64, bool) {
 	e.register.RLock()
 	defer e.register.RUnlock()
 	timeout, exist := e.register.m[key]
