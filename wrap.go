@@ -51,13 +51,13 @@ func SetupLoggers() {
 	log.SetWarning(logger.NewWarningLogger())
 }
 
-// WrapNewWorker creates a new machinery worker with a random UUID as tag and concurrency = number of CPU x2
+// WrapNewWorker creates a new machinery worker with a random UUID as tag and concurrency = number of CPU x4
 func (m *Server) WrapNewWorker() *machinery.Worker {
 	uid, err := uuid.NewRandom()
 	if err != nil {
 		panic(err)
 	}
-	return m.NewWorker(uid.String(), runtime.NumCPU()*2)
+	return m.NewWorker(uid.String(), runtime.NumCPU()*4)
 }
 
 // WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
