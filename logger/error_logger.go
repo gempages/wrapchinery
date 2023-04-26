@@ -18,21 +18,21 @@ func NewErrorLogger() logging.LoggerInterface {
 func (errorLogger) Print(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Error(args...)
 }
 
 func (errorLogger) Printf(format string, args ...interface{}) {
 	err := fmt.Errorf(format, args...)
-	log.LogError(context.Background(), err)
+	log.Error(context.Background(), err)
 	logrus.Errorf(format, args...)
 }
 
 func (errorLogger) Println(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Errorln(args...)
 }
@@ -40,21 +40,21 @@ func (errorLogger) Println(args ...interface{}) {
 func (errorLogger) Fatal(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Fatal(args...)
 }
 
 func (errorLogger) Fatalf(format string, args ...interface{}) {
 	err := fmt.Errorf(format, args...)
-	log.LogError(context.Background(), err)
+	log.Error(context.Background(), err)
 	logrus.Fatalf(format, args...)
 }
 
 func (errorLogger) Fatalln(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Fatalln(args...)
 }
@@ -62,21 +62,21 @@ func (errorLogger) Fatalln(args ...interface{}) {
 func (errorLogger) Panic(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Panic(args...)
 }
 
 func (errorLogger) Panicf(format string, args ...interface{}) {
 	err := fmt.Errorf(format, args...)
-	log.LogError(context.Background(), err)
+	log.Error(context.Background(), err)
 	logrus.Panicf(format, args...)
 }
 
 func (errorLogger) Panicln(args ...interface{}) {
 	err := toError(args...)
 	if err != nil {
-		log.LogError(context.Background(), err)
+		log.Error(context.Background(), err)
 	}
 	logrus.Panicln(args...)
 }
