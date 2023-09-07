@@ -15,15 +15,19 @@ import (
 	"github.com/RichardKnop/machinery/v2/tasks"
 	"github.com/gempages/wrapchinery/logger"
 	"github.com/google/uuid"
+	"github.com/spf13/cast"
 )
 
 type TaskConfig struct {
 	Name       string
+	ShopID     uint64
 	Delay      time.Duration
 	RetryCount int
 	OnSuccess  *TaskConfig
 	OnError    *TaskConfig
 }
+
+const ShopIDHeader = "shopID"
 
 type Server struct {
 	machinery.Server
@@ -77,6 +81,14 @@ func GetTaskSignature(cfg *TaskConfig, args ...interface{}) *tasks.Signature {
 		timeETA := time.Now().UTC().Add(cfg.Delay)
 		task.ETA = &timeETA
 	}
+	// manual add shopID into header
+	if cfg.ShopID > 0 {
+		if task.Headers == nil {
+			task.Headers = tasks.Headers{}
+		}
+		task.Headers.Set(ShopIDHeader, cast.ToString(cfg.ShopID))
+	}
+
 	task.RetryCount = cfg.RetryCount
 	task.IgnoreWhenTaskNotRegistered = true
 	if cfg.OnSuccess != nil {
