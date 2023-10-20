@@ -2,6 +2,7 @@ package wrapchinery
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"time"
 
@@ -13,7 +14,11 @@ import (
 	lockiface "github.com/RichardKnop/machinery/v2/locks/iface"
 	"github.com/RichardKnop/machinery/v2/log"
 	"github.com/RichardKnop/machinery/v2/tasks"
+	gplog "github.com/gempages/go-helper/log"
+	"github.com/gempages/go-helper/tracing"
 	"github.com/gempages/wrapchinery/logger"
+	"github.com/getsentry/sentry-go"
+	"github.com/goccy/go-json"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
 )
@@ -54,27 +59,49 @@ func SetupLoggers() {
 	log.SetWarning(logger.NewWarningLogger())
 }
 
-// WrapNewWorker creates a new machinery worker with a random UUID as tag
+// WrapNewWorker creates a new worker worker with a random UUID as tag
 func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
 	uid, err := uuid.NewRandom()
 	if err != nil {
 		panic(err)
 	}
-	return m.NewWorker(uid.String(), concurrency)
+
+	w := m.NewWorker(uid.String(), concurrency)
+	// Override default error handler function in order to remove task ID in error message,
+	// which makes it easier to manage issues in Sentry
+	w.SetErrorHandler(func(err error) {
+		gplog.Error(context.Background(), fmt.Errorf("worker task failed: %w", err))
+	})
+	return w
 }
 
-// WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
+// WrapSendTask calls worker's SendTask function with task signature created using GetTaskSignature function
 func (m *Server) WrapSendTask(cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
 	task := GetTaskSignature(cfg, args...)
 	return m.SendTask(task)
 }
 
 func (m *Server) WrapSendTaskWithContext(ctx context.Context, cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
+	var err error
+
+	span := sentry.StartSpan(ctx, "send_task")
+	span.Description = cfg.Name
+	defer func() {
+		tracing.FinishSpan(span, err)
+	}()
+	ctx = span.Context()
+	traceEncoded, err := json.Marshal(tracing.ToSentryTrace(span))
+	if err != nil {
+		gplog.Warning(ctx, fmt.Errorf("encode trace header: %w", err))
+	} else {
+		args = append([]interface{}{traceEncoded}, args...)
+	}
+
 	task := GetTaskSignature(cfg, args...)
 	return m.SendTaskWithContext(ctx, task)
 }
 
-// GetTaskSignature returns machinery's task signature object to use with SendTask and SendTaskWithContext functions
+// GetTaskSignature returns worker's task signature object to use with SendTask and SendTaskWithContext functions
 func GetTaskSignature(cfg *TaskConfig, args ...interface{}) *tasks.Signature {
 	task, _ := tasks.NewSignature(cfg.Name, parseArgs(args...))
 	if cfg.Delay > 0 {
