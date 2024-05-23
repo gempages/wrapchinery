@@ -6,7 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/RichardKnop/logging v0.0.0-20190827224416-1a693bdd4fae
-	github.com/RichardKnop/machinery/v2 v2.0.13
+	github.com/RichardKnop/machinery/v2 v2.0.14-0.20240522233733-5dad7c262143
 	github.com/gempages/go-helper v1.8.0
 	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.3
