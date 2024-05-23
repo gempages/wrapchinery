@@ -2,19 +2,18 @@ package wrapchinery
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"reflect"
 	"time"
 
-	"github.com/RichardKnop/machinery/v2"
-	backendsiface "github.com/RichardKnop/machinery/v2/backends/iface"
 	"github.com/RichardKnop/machinery/v2/backends/result"
-	brokersiface "github.com/RichardKnop/machinery/v2/brokers/iface"
-	"github.com/RichardKnop/machinery/v2/config"
-	lockiface "github.com/RichardKnop/machinery/v2/locks/iface"
 	"github.com/RichardKnop/machinery/v2/log"
 	"github.com/RichardKnop/machinery/v2/tasks"
+	gplog "github.com/gempages/go-helper/log"
+	"github.com/gempages/go-helper/tracing"
 	"github.com/gempages/wrapchinery/logger"
-	"github.com/google/uuid"
+	"github.com/getsentry/sentry-go"
 	"github.com/spf13/cast"
 )
 
@@ -29,49 +28,12 @@ type TaskConfig struct {
 
 const ShopIDHeader = "shopID"
 
-type Server struct {
-	machinery.Server
-}
-
-// NewServer creates Server instance
-func NewServer(
-	cnf *config.Config, brokerServer brokersiface.Broker,
-	backendServer backendsiface.Backend, lock lockiface.Lock,
-) *Server {
-
-	server := &Server{
-		*machinery.NewServer(cnf, brokerServer, backendServer, lock),
-	}
-
-	return server
-}
-
 func SetupLoggers() {
 	log.SetDebug(logger.NewDebugLogger())
 	log.SetError(logger.NewErrorLogger())
 	log.SetInfo(logger.NewInfoLogger())
 	log.SetFatal(logger.NewFatalLogger())
 	log.SetWarning(logger.NewWarningLogger())
-}
-
-// WrapNewWorker creates a new machinery worker with a random UUID as tag
-func (m *Server) WrapNewWorker(concurrency int) *machinery.Worker {
-	uid, err := uuid.NewRandom()
-	if err != nil {
-		panic(err)
-	}
-	return m.NewWorker(uid.String(), concurrency)
-}
-
-// WrapSendTask calls machinery's SendTask function with task signature created using GetTaskSignature function
-func (m *Server) WrapSendTask(cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
-	task := GetTaskSignature(cfg, args...)
-	return m.SendTask(task)
-}
-
-func (m *Server) WrapSendTaskWithContext(ctx context.Context, cfg *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
-	task := GetTaskSignature(cfg, args...)
-	return m.SendTaskWithContext(ctx, task)
 }
 
 // GetTaskSignature returns machinery's task signature object to use with SendTask and SendTaskWithContext functions
@@ -98,6 +60,62 @@ func GetTaskSignature(cfg *TaskConfig, args ...interface{}) *tasks.Signature {
 		task.OnError = []*tasks.Signature{GetTaskSignature(cfg.OnError, args...)}
 	}
 	return task
+}
+
+func RegisterTasks(taskList map[string]interface{}) error {
+	return server.RegisterTasks(taskList)
+}
+
+func SendTask(ctx context.Context, task *TaskConfig, args ...interface{}) (*result.AsyncResult, error) {
+	var err error
+
+	span := sentry.StartSpan(ctx, "send_task")
+	span.Description = task.Name
+	defer func() {
+		tracing.FinishSpan(span, err)
+	}()
+	ctx = span.Context()
+	traceEncoded, err := json.Marshal(tracing.ToSentryTrace(span))
+	if err != nil {
+		gplog.Warning(ctx, fmt.Errorf("encode trace header: %w", err))
+	} else {
+		args = append([]interface{}{traceEncoded}, args...)
+	}
+
+	asyncResult, err := server.WrapSendTaskWithContext(ctx, task, args...)
+	if err != nil {
+		return asyncResult, fmt.Errorf("send task: %w", err)
+	}
+	return asyncResult, err
+}
+
+func SendTaskWaitResult(ctx context.Context, task *TaskConfig, args ...interface{}) error {
+	var err error
+
+	span := sentry.StartSpan(ctx, "send_task_wait")
+	span.Description = task.Name
+	defer func() {
+		tracing.FinishSpan(span, err)
+	}()
+	ctx = span.Context()
+	traceEncoded, err := json.Marshal(tracing.ToSentryTrace(span))
+	if err != nil {
+		gplog.Warning(ctx, fmt.Errorf("encode trace header: %w", err))
+	} else {
+		args = append([]interface{}{traceEncoded}, args...)
+	}
+
+	asyncResult, err := server.WrapSendTaskWithContext(ctx, task, args...)
+	if err != nil {
+		return fmt.Errorf("send task: %w", err)
+	}
+
+	_, err = asyncResult.Get(time.Millisecond * 5)
+
+	if err != nil {
+		return fmt.Errorf("get task result: %w", err)
+	}
+	return nil
 }
 
 func parseArgs(args ...interface{}) []tasks.Arg {
