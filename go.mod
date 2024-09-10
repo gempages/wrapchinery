@@ -2,17 +2,17 @@ module github.com/gempages/wrapchinery
 
 go 1.22
 
-toolchain go1.22.3
+toolchain go1.22.5
 
 require (
 	github.com/RichardKnop/logging v0.0.0-20190827224416-1a693bdd4fae
 	github.com/RichardKnop/machinery/v2 v2.0.14-0.20240522233733-5dad7c262143
 	github.com/alicebob/miniredis v2.5.0+incompatible
-	github.com/gempages/go-helper v1.9.2-0.20240523032351-1c04521b5567
-	github.com/getsentry/sentry-go v0.27.0
+	github.com/gempages/go-helper v1.12.3-0.20240910054425-aa761828c4e2
+	github.com/getsentry/sentry-go v0.28.1
 	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cast v1.6.0
+	github.com/spf13/cast v1.7.0
 )
 
 require (
@@ -22,12 +22,12 @@ require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	cloud.google.com/go/iam v1.1.8 // indirect
 	cloud.google.com/go/pubsub v1.38.0 // indirect
-	github.com/99designs/gqlgen v0.17.47 // indirect
+	github.com/99designs/gqlgen v0.17.49 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 // indirect
-	github.com/aws/aws-sdk-go v1.53.8 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/elliotchance/pie/v2 v2.8.0 // indirect
+	github.com/elliotchance/pie/v2 v2.9.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
@@ -54,7 +54,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.12 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.16 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
@@ -70,19 +70,19 @@ require (
 	go.opentelemetry.io/otel v1.27.0 // indirect
 	go.opentelemetry.io/otel/metric v1.27.0 // indirect
 	go.opentelemetry.io/otel/trace v1.27.0 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/oauth2 v0.20.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/api v0.181.0 // indirect
 	google.golang.org/genproto v0.0.0-20240521202816-d264139d666e // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240521202816-d264139d666e // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240521202816-d264139d666e // indirect
-	google.golang.org/grpc v1.64.0 // indirect
-	google.golang.org/protobuf v1.34.1 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240604185151-ef581f913117 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240827150818-7e3bb234dfed // indirect
+	google.golang.org/grpc v1.66.0 // indirect
+	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
