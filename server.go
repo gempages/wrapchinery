@@ -16,6 +16,7 @@ import (
 	redislock "github.com/RichardKnop/machinery/v2/locks/redis"
 	"github.com/alicebob/miniredis"
 	"github.com/gempages/go-helper/cache"
+	gpconfig "github.com/gempages/go-helper/config"
 	"github.com/google/uuid"
 )
 
@@ -83,7 +84,10 @@ func InitTestTaskServer() error {
 		return err
 	}
 
-	err = cache.InitRedisClient(mr.Host(), mr.Port())
+	err = cache.InitRedisClient(gpconfig.Redis{
+		Host: mr.Host(),
+		Port: mr.Port(),
+	})
 	if err != nil {
 		return err
 	}
